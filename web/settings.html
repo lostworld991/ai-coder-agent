@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Coder Agent - Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 600px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 2rem; color: #4CAF50; }
+    .card { background: #16213e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #0f3460; }
+    .card h2 { font-size: 1rem; margin-bottom: 1rem; color: #4CAF50; }
+    label { display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #aaa; }
+    input, select { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #0f3460; background: #1a1a2e; color: #eee; margin-bottom: 0.75rem; font-size: 0.9rem; }
+    input:focus, select:focus { outline: none; border-color: #4CAF50; }
+    .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .checkbox-group input { width: auto; margin-bottom: 0; }
+    .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+    .btn-primary { background: #4CAF50; color: #fff; }
+    .btn-secondary { background: #0f3460; color: #eee; margin-left: 0.5rem; }
+    .btn:hover { opacity: 0.9; }
+    .actions { text-align: center; margin-top: 1.5rem; }
+    .status { text-align: center; margin-top: 1rem; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; }
+    .status.success { background: #1b5e20; color: #a5d6a7; }
+    .status.error { background: #b71c1c; color: #ef9a9a; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Coder Agent</h1>
+
+    <div class="card">
+      <h2>AI Provider</h2>
+      <label for="provider">Provider</label>
+      <select id="provider">
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <label for="apiKey">API Key</label>
+      <input type="password" id="apiKey" placeholder="sk-...">
+
+      <label for="baseUrl">Base URL (for custom provider)</label>
+      <input type="text" id="baseUrl" placeholder="https://api.example.com/v1">
+
+      <label for="modelName">Model Name</label>
+      <input type="text" id="modelName" placeholder="gpt-4">
+    </div>
+
+    <div class="card">
+      <h2>GitHub</h2>
+      <label for="githubToken">GitHub Token</label>
+      <input type="password" id="githubToken" placeholder="ghp_...">
+
+      <label for="githubRepo">Default Repository</label>
+      <input type="text" id="githubRepo" placeholder="owner/repo">
+    </div>
+
+    <div class="card">
+      <h2>Automation</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="autoCode" checked>
+        <label for="autoCode" style="margin-bottom:0">Auto-code on new issues</label>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="autoFix" checked>
+        <label for="autoFix" style="margin-bottom:0">Auto-fix CI failures and review comments</label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+      <button class="btn btn-secondary" onclick="testConnection()">Test Connection</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    async function loadSettings() {
+      const res = await fetch('/api/settings');
+      const settings = await res.json();
+      document.getElementById('provider').value = settings.provider || 'openai';
+      document.getElementById('apiKey').value = settings.apiKey || '';
+      document.getElementById('baseUrl').value = settings.baseUrl || '';
+      document.getElementById('modelName').value = settings.modelName || '';
+      document.getElementById('githubToken').value = settings.githubToken || '';
+      document.getElementById('githubRepo').value = settings.githubRepo || '';
+      document.getElementById('autoCode').checked = settings.autoCode !== false;
+      document.getElementById('autoFix').checked = settings.autoFix !== false;
+    }
+
+    async function saveSettings() {
+      const settings = {
+        provider: document.getElementById('provider').value,
+        apiKey: document.getElementById('apiKey').value,
+        baseUrl: document.getElementById('baseUrl').value,
+        modelName: document.getElementById('modelName').value,
+        githubToken: document.getElementById('githubToken').value,
+        githubRepo: document.getElementById('githubRepo').value,
+        autoCode: document.getElementById('autoCode').checked,
+        autoFix: document.getElementById('autoFix').checked,
+      };
+
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+
+      const status = document.getElementById('status');
+      if (res.ok) {
+        status.className = 'status success';
+        status.textContent = 'Settings saved successfully!';
+      } else {
+        status.className = 'status error';
+        status.textContent = 'Failed to save settings.';
+      }
+    }
+
+    async function testConnection() {
+      const settings = {
+        provider: document.getElementById('provider').value,
+        apiKey: document.getElementById('apiKey').value,
+        baseUrl: document.getElementById('baseUrl').value,
+        modelName: document.getElementById('modelName').value,
+      };
+
+      const res = await fetch('/api/settings/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+
+      const result = await res.json();
+      const status = document.getElementById('status');
+      status.className = result.ok ? 'status success' : 'status error';
+      status.textContent = result.message;
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

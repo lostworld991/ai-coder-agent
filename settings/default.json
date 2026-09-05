@@ -1,0 +1,10 @@
+{
+  "provider": "openai",
+  "apiKey": "",
+  "baseUrl": "",
+  "modelName": "",
+  "githubToken": "",
+  "githubRepo": "",
+  "autoCode": true,
+  "autoFix": true
+}
