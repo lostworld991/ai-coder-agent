@@ -6,29 +6,41 @@
   <title>AI Coder Agent - Settings</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; padding: 2rem; }
-    .container { max-width: 600px; margin: 0 auto; }
-    h1 { text-align: center; margin-bottom: 2rem; color: #4CAF50; }
-    .card { background: #16213e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #0f3460; }
-    .card h2 { font-size: 1rem; margin-bottom: 1rem; color: #4CAF50; }
-    label { display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #aaa; }
-    input, select { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #0f3460; background: #1a1a2e; color: #eee; margin-bottom: 0.75rem; font-size: 0.9rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 2rem; }
+    .container { max-width: 640px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 0.5rem; color: #4CAF50; font-size: 1.5rem; }
+    .subtitle { text-align: center; color: #888; margin-bottom: 2rem; font-size: 0.85rem; }
+    .card { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid #2a2a3e; }
+    .card h2 { font-size: 0.9rem; margin-bottom: 1rem; color: #4CAF50; text-transform: uppercase; letter-spacing: 0.05em; }
+    label { display: block; margin-bottom: 0.3rem; font-size: 0.8rem; color: #999; }
+    input, select { width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #2a2a3e; background: #0f0f1a; color: #e0e0e0; margin-bottom: 0.8rem; font-size: 0.9rem; transition: border-color 0.2s; }
     input:focus, select:focus { outline: none; border-color: #4CAF50; }
-    .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .checkbox-group { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
     .checkbox-group input { width: auto; margin-bottom: 0; }
-    .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+    .checkbox-group label { margin-bottom: 0; cursor: pointer; }
+    .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: opacity 0.2s, transform 0.1s; }
+    .btn:active { transform: scale(0.98); }
     .btn-primary { background: #4CAF50; color: #fff; }
-    .btn-secondary { background: #0f3460; color: #eee; margin-left: 0.5rem; }
-    .btn:hover { opacity: 0.9; }
+    .btn-secondary { background: #2a2a3e; color: #e0e0e0; margin-left: 0.5rem; }
+    .btn:hover { opacity: 0.85; }
     .actions { text-align: center; margin-top: 1.5rem; }
-    .status { text-align: center; margin-top: 1rem; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; }
-    .status.success { background: #1b5e20; color: #a5d6a7; }
-    .status.error { background: #b71c1c; color: #ef9a9a; }
+    .status { text-align: center; margin-top: 1rem; padding: 0.6rem; border-radius: 8px; font-size: 0.85rem; display: none; }
+    .status.success { display: block; background: #1b3a1b; color: #81c784; border: 1px solid #2e7d32; }
+    .status.error { display: block; background: #3a1b1b; color: #e57373; border: 1px solid #c62828; }
+    .status.loading { display: block; background: #1b1b3a; color: #7986cb; border: 1px solid #3f51b5; }
+    .agent-run { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #2a2a3e; }
+    .agent-run textarea { width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #2a2a3e; background: #0f0f1a; color: #e0e0e0; font-size: 0.85rem; min-height: 80px; resize: vertical; font-family: inherit; }
+    .log-output { background: #0a0a15; border-radius: 8px; padding: 0.75rem; margin-top: 0.75rem; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; border: 1px solid #2a2a3e; }
+    .log-output .log-info { color: #7986cb; }
+    .log-output .log-success { color: #81c784; }
+    .log-output .log-error { color: #e57373; }
+    .log-output .log-tool { color: #ffb74d; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>AI Coder Agent</h1>
+    <p class="subtitle">Configure your AI provider and GitHub integration</p>
 
     <div class="card">
       <h2>AI Provider</h2>
@@ -46,7 +58,7 @@
       <input type="text" id="baseUrl" placeholder="https://api.example.com/v1">
 
       <label for="modelName">Model Name</label>
-      <input type="text" id="modelName" placeholder="gpt-4">
+      <input type="text" id="modelName" placeholder="gpt-4-turbo">
     </div>
 
     <div class="card">
@@ -62,11 +74,11 @@
       <h2>Automation</h2>
       <div class="checkbox-group">
         <input type="checkbox" id="autoCode" checked>
-        <label for="autoCode" style="margin-bottom:0">Auto-code on new issues</label>
+        <label for="autoCode">Auto-code on new issues</label>
       </div>
       <div class="checkbox-group">
         <input type="checkbox" id="autoFix" checked>
-        <label for="autoFix" style="margin-bottom:0">Auto-fix CI failures and review comments</label>
+        <label for="autoFix">Auto-fix CI failures and review comments</label>
       </div>
     </div>
 
@@ -75,25 +87,44 @@
       <button class="btn btn-secondary" onclick="testConnection()">Test Connection</button>
     </div>
 
-    <div id="status"></div>
+    <div id="status" class="status"></div>
+
+    <div class="card agent-run">
+      <h2>Run Agent</h2>
+      <label for="task">Task Description</label>
+      <textarea id="task" placeholder="Describe what you want the agent to do..."></textarea>
+
+      <label for="repo">Repository URL</label>
+      <input type="text" id="repo" placeholder="https://github.com/owner/repo">
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="runAgent()">Run Agent</button>
+      </div>
+
+      <div id="logOutput" class="log-output" style="display:none"></div>
+    </div>
   </div>
 
   <script>
     async function loadSettings() {
-      const res = await fetch('/api/settings');
-      const settings = await res.json();
-      document.getElementById('provider').value = settings.provider || 'openai';
-      document.getElementById('apiKey').value = settings.apiKey || '';
-      document.getElementById('baseUrl').value = settings.baseUrl || '';
-      document.getElementById('modelName').value = settings.modelName || '';
-      document.getElementById('githubToken').value = settings.githubToken || '';
-      document.getElementById('githubRepo').value = settings.githubRepo || '';
-      document.getElementById('autoCode').checked = settings.autoCode !== false;
-      document.getElementById('autoFix').checked = settings.autoFix !== false;
+      try {
+        const res = await fetch('/api/settings');
+        const settings = await res.json();
+        document.getElementById('provider').value = settings.provider || 'openai';
+        document.getElementById('apiKey').value = settings.apiKey ? '' : '';
+        document.getElementById('baseUrl').value = settings.baseUrl || '';
+        document.getElementById('modelName').value = settings.modelName || '';
+        document.getElementById('githubToken').value = settings.githubToken ? '' : '';
+        document.getElementById('githubRepo').value = settings.githubRepo || '';
+        document.getElementById('autoCode').checked = settings.autoCode !== false;
+        document.getElementById('autoFix').checked = settings.autoFix !== false;
+      } catch (err) {
+        showStatus('Failed to load settings: ' + err.message, 'error');
+      }
     }
 
-    async function saveSettings() {
-      const settings = {
+    function getSettingsFromForm() {
+      return {
         provider: document.getElementById('provider').value,
         apiKey: document.getElementById('apiKey').value,
         baseUrl: document.getElementById('baseUrl').value,
@@ -103,41 +134,81 @@
         autoCode: document.getElementById('autoCode').checked,
         autoFix: document.getElementById('autoFix').checked,
       };
+    }
 
+    async function saveSettings() {
+      const settings = getSettingsFromForm();
       const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
-
-      const status = document.getElementById('status');
       if (res.ok) {
-        status.className = 'status success';
-        status.textContent = 'Settings saved successfully!';
+        showStatus('Settings saved successfully!', 'success');
       } else {
-        status.className = 'status error';
-        status.textContent = 'Failed to save settings.';
+        const err = await res.json();
+        showStatus('Failed: ' + err.error, 'error');
       }
     }
 
     async function testConnection() {
-      const settings = {
-        provider: document.getElementById('provider').value,
-        apiKey: document.getElementById('apiKey').value,
-        baseUrl: document.getElementById('baseUrl').value,
-        modelName: document.getElementById('modelName').value,
-      };
-
+      const settings = getSettingsFromForm();
+      showStatus('Testing connection...', 'loading');
       const res = await fetch('/api/settings/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
-
       const result = await res.json();
+      showStatus(result.message, result.ok ? 'success' : 'error');
+    }
+
+    async function runAgent() {
+      const task = document.getElementById('task').value;
+      const repo = document.getElementById('repo').value;
+      if (!task || !repo) {
+        showStatus('Please enter a task and repository URL', 'error');
+        return;
+      }
+
+      const logOutput = document.getElementById('logOutput');
+      logOutput.style.display = 'block';
+      logOutput.innerHTML = '';
+
+      const res = await fetch('/api/agent/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task, repo, stream: true }),
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const text = decoder.decode(value);
+        for (const line of text.split('\n')) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const event = JSON.parse(line.slice(6));
+            const div = document.createElement('div');
+            div.className = 'log-' + (event.type === 'error' ? 'error' : event.type === 'complete' ? 'success' : event.type === 'tool_call' ? 'tool' : 'info');
+            div.textContent = '[' + event.type + '] ' + event.message;
+            logOutput.appendChild(div);
+            logOutput.scrollTop = logOutput.scrollHeight;
+          } catch {}
+        }
+      }
+    }
+
+    function showStatus(message, type) {
       const status = document.getElementById('status');
-      status.className = result.ok ? 'status success' : 'status error';
-      status.textContent = result.message;
+      status.className = 'status ' + type;
+      status.textContent = message;
+      if (type !== 'loading') {
+        setTimeout(() => { status.className = 'status'; }, 5000);
+      }
     }
 
     loadSettings();
